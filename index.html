@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>REUNIFICAR — Venezuela</title>
+<link rel="stylesheet" href="style.css">
+
+
+</head>
+<body>
+
+<div class="alerta-top">🚨 EMERGENCIA ACTIVA — VENEZUELA — TERREMOTO 🚨 &nbsp;|&nbsp; Comparte este enlace</div>
+
+<header>
+  <div style="font-size:26px;margin-bottom:4px">🇻🇪</div>
+  <h1>REUNIFICAR</h1>
+  <p>Miles de familias buscan a sus seres queridos. Cada registro puede reunir a una familia.</p>
+  <div class="contador-wrap">
+    <div class="cnt"><span id="cnt-enc">0</span>Menores encontrados</div>
+    <div class="cnt"><span id="cnt-bus">0</span>Búsquedas activas</div>
+    <div class="cnt"><span id="cnt-res">0</span>Familias reunidas</div>
+  </div>
+</header>
+
+<main>
+
+<!-- ════════ INICIO ════════ -->
+<div id="p-inicio" class="pantalla activa inicio">
+  <p class="lema">"Cada minuto cuenta."</p>
+
+  <button class="btn-grande btn-enc" onclick="ir('p-enc-form')">
+    <span class="ico">🔵</span>
+    <span><div>REPORTAR MENOR ENCONTRADO</div><small>Encontré a un niño u otra persona sin identificar</small></span>
+  </button>
+
+  <button class="btn-grande btn-bus" onclick="ir('p-bus-form')">
+    <span class="ico">🟠</span>
+    <span><div>BUSCAR A UN FAMILIAR</div><small>Mi familiar desapareció — niño, adulto, abuelo…</small></span>
+  </button>
+
+  <button class="btn-grande btn-ver" onclick="ir('p-galeria');cargarGaleria()">
+    <span class="ico">🟢</span>
+    <span><div>VER MENORES ENCONTRADOS</div><small>Busca a tu familiar entre los registros</small></span>
+  </button>
+
+  <hr class="sep">
+  <p class="cita">🙏 Si encontraste a alguien, regístralo ahora. Una foto puede cambiar todo.</p>
+  <br>
+  <button class="link-admin" onclick="ir('p-admin-login')">Acceso administradores</button>
+</div>
+
+<!-- ════════ FORM 1: MENOR ENCONTRADO ════════ -->
+<div id="p-enc-form" class="pantalla">
+  <div class="form-header">
+    <button class="btn-volver" onclick="ir('p-inicio')">←</button>
+    <h2>🔵 Reportar menor encontrado</h2>
+  </div>
+  <form id="form-enc" onsubmit="enviarEncontrado(event)">
+
+    <div class="sec">
+      <h3>📸 Foto del menor</h3>
+      <div class="upload-area" id="ua-menor" onclick="document.getElementById('fi-menor').click()">
+        <input type="file" id="fi-menor" accept="image/*" capture="environment" style="display:none"
+               onchange="prevFoto(this,'ua-menor','pi-menor','fd-menor')">
+        <div class="uico">📷</div>
+        <p>Toca para tomar foto o seleccionar<br><strong style="color:#E74C3C">OBLIGATORIA</strong></p>
+        <img id="pi-menor" class="prev-img">
+      </div>
+    </div>
+
+    <div class="sec">
+      <h3>👤 Información del menor</h3>
+      <label>Nombre (si lo conoce)</label>
+      <input type="text" id="e-nombre" placeholder="Ej: José, o déjalo vacío si no sabe">
+      <label>Edad aproximada <span class="req">*</span></label>
+      <input type="number" id="e-edad" min="0" max="120" placeholder="Años" required>
+      <label>Sexo <span class="req">*</span></label>
+      <div class="radio-group">
+        <label><input type="radio" name="e-sexo" value="Niño" required> 👦 Niño</label>
+        <label><input type="radio" name="e-sexo" value="Niña"> 👧 Niña</label>
+        <label><input type="radio" name="e-sexo" value="Masculino"> 👨 Masculino</label>
+        <label><input type="radio" name="e-sexo" value="Femenino"> 👩 Femenino</label>
+      </div>
+      <label>Estado de salud <span class="req">*</span></label>
+      <div class="radio-group">
+        <label><input type="radio" name="e-salud" value="Estable" required> ✅ Estable</label>
+        <label><input type="radio" name="e-salud" value="Herido leve"> 🩹 Herido leve</label>
+        <label><input type="radio" name="e-salud" value="Herido grave"> 🚨 Herido grave</label>
+        <label><input type="radio" name="e-salud" value="Crítico"> ⛑️ Crítico</label>
+      </div>
+      <label>Señas particulares</label>
+      <textarea id="e-senas" placeholder="Color de cabello, ropa que vestía, cicatrices, lunares, nombre en ropa..."></textarea>
+      <label>Ciudad donde fue encontrado <span class="req">*</span></label>
+      <input type="text" id="e-ciudad-rescate" placeholder="Ej: Maturín, Caracas, Barquisimeto" required>
+      <label>Fecha y hora del rescate <span class="req">*</span></label>
+      <input type="datetime-local" id="e-fecha" required>
+    </div>
+
+    <div class="sec">
+      <h3>📍 Ubicación actual (solo admin verá esto)</h3>
+      <label>Tipo de lugar <span class="req">*</span></label>
+      <div class="radio-group">
+        <label><input type="radio" name="e-tipo" value="Hospital" required> 🏥 Hospital</label>
+        <label><input type="radio" name="e-tipo" value="Refugio"> ⛺ Refugio</label>
+        <label><input type="radio" name="e-tipo" value="Organismo público"> 🏛️ Organismo</label>
+        <label><input type="radio" name="e-tipo" value="Persona particular"> 🏠 Particular</label>
+        <label><input type="radio" name="e-tipo" value="Otro"> 📌 Otro</label>
+      </div>
+      <label>Nombre del lugar o institución <span class="req">*</span></label>
+      <input type="text" id="e-nombre-lugar" placeholder="Ej: Hospital General de Maturín" required>
+      <label>Dirección exacta o referencia</label>
+      <input type="text" id="e-dir" placeholder="Ej: Av. Libertador con Calle 5">
+    </div>
+
+    <div class="sec">
+      <h3>🧑 Persona responsable actualmente (solo admin)</h3>
+      <label>Nombre completo <span class="req">*</span></label>
+      <input type="text" id="e-resp-nom" placeholder="Nombre de quien cuida al menor" required>
+      <label>📸 Foto de la persona responsable</label>
+      <div class="upload-area" id="ua-resp" onclick="document.getElementById('fi-resp').click()">
+        <input type="file" id="fi-resp" accept="image/*" capture="environment" style="display:none"
+               onchange="prevFoto(this,'ua-resp','pi-resp','fd-resp')">
+        <div class="uico">📷</div>
+        <p>Muy importante — ayuda a verificar identidad</p>
+        <img id="pi-resp" class="prev-img">
+      </div>
+      <label>Cargo o institución</label>
+      <input type="text" id="e-resp-cargo" placeholder="Ej: Médico, Bombero, Vecino">
+      <label>Teléfono de contacto <span class="req">*</span></label>
+      <input type="tel" id="e-resp-tel" placeholder="+58 412 000 0000" required>
+    </div>
+
+    <div class="sec">
+      <h3>📋 Quien hace el reporte</h3>
+      <label>Nombre <span class="req">*</span></label>
+      <input type="text" id="e-rep-nom" placeholder="Tu nombre" required>
+      <label>Teléfono <span class="req">*</span></label>
+      <input type="tel" id="e-rep-tel" placeholder="+58 412 000 0000" required>
+      <label>¿Cómo encontraste al menor?</label>
+      <select id="e-rep-rel">
+        <option value="">Selecciona...</option>
+        <option>Rescatista / bombero</option>
+        <option>Personal médico</option>
+        <option>Vecino o particular</option>
+        <option>Voluntario de organización</option>
+        <option>Otro</option>
+      </select>
+      <label>Información adicional</label>
+      <textarea id="e-adicional" placeholder="Cualquier detalle relevante..."></textarea>
+    </div>
+
+    <button type="submit" class="btn-enviar be-azul" id="btn-enc-submit">✅ Registrar menor encontrado</button>
+  </form>
+</div>
+
+<!-- ════════ FORM 2: BÚSQUEDA ════════ -->
+<div id="p-bus-form" class="pantalla">
+  <div class="form-header">
+    <button class="btn-volver" onclick="ir('p-inicio')">←</button>
+    <h2>🟠 Buscar a un familiar</h2>
+  </div>
+  <form id="form-bus" onsubmit="enviarBusqueda(event)">
+
+    <div class="sec">
+      <h3>📸 Fotos de la persona buscada</h3>
+      <div class="upload-area" id="ua-buscado" onclick="document.getElementById('fi-buscado').click()">
+        <input type="file" id="fi-buscado" accept="image/*" multiple style="display:none"
+               onchange="prevFoto(this,'ua-buscado','pi-buscado','fd-buscado')">
+        <div class="uico">📷</div>
+        <p>Sube una foto — aumenta mucho las chances</p>
+        <img id="pi-buscado" class="prev-img">
+      </div>
+    </div>
+
+    <div class="sec">
+      <h3>👤 Persona buscada</h3>
+      <label>Nombre completo <span class="req">*</span></label>
+      <input type="text" id="b-nombre" placeholder="Nombre y apellido" required>
+      <label>Edad aproximada <span class="req">*</span></label>
+      <input type="number" id="b-edad" min="0" max="120" placeholder="Años" required>
+      <label>Sexo <span class="req">*</span></label>
+      <div class="radio-group">
+        <label><input type="radio" name="b-sexo" value="Masculino" required> 👦 Masculino</label>
+        <label><input type="radio" name="b-sexo" value="Femenino"> 👧 Femenino</label>
+      </div>
+      <label>Señas particulares</label>
+      <textarea id="b-senas" placeholder="Estatura, color de cabello, ropa que vestía, cicatrices, tatuajes, lunares..."></textarea>
+      <label>Último lugar donde fue visto/a <span class="req">*</span></label>
+      <input type="text" id="b-ultimo-lugar" placeholder="Ej: Edificio Libertador, centro de Maturín" required>
+      <label>Estado o ciudad</label>
+      <input type="text" id="b-estado" placeholder="Ej: Monagas, Caracas">
+      <label>Fecha aproximada de desaparición <span class="req">*</span></label>
+      <input type="datetime-local" id="b-fecha" required>
+      <label>¿Tiene condición médica importante?</label>
+      <input type="text" id="b-condicion" placeholder="Ej: Diabético, usa lentes, toma medicación para el corazón">
+    </div>
+
+    <div class="sec">
+      <h3>📋 Quien busca</h3>
+      <label>Nombre completo <span class="req">*</span></label>
+      <input type="text" id="b-bnom" placeholder="Tu nombre" required>
+      <label>Relación <span class="req">*</span></label>
+      <select id="b-rel" required>
+        <option value="">Selecciona...</option>
+        <option>Padre / Madre</option><option>Hijo / Hija</option>
+        <option>Hermano / Hermana</option><option>Abuelo / Abuela</option>
+        <option>Tío / Tía</option><option>Esposo / Esposa</option>
+        <option>Amigo / Vecino</option><option>Otro familiar</option>
+      </select>
+      <label>Teléfono <span class="req">*</span></label>
+      <input type="tel" id="b-tel" placeholder="+58 412 000 0000" required>
+      <label>Correo electrónico (opcional)</label>
+      <input type="email" id="b-email" placeholder="tu@correo.com">
+      <label>País donde estás actualmente <span class="req">*</span></label>
+      <input type="text" id="b-pais" placeholder="Ej: Venezuela, Colombia, España" required>
+      <label>¿Ya reportaste a las autoridades?</label>
+      <div class="radio-group">
+        <label><input type="radio" name="b-aut" value="Sí"> ✅ Sí</label>
+        <label><input type="radio" name="b-aut" value="No"> ❌ No</label>
+        <label><input type="radio" name="b-aut" value="No sé cómo"> ❓ No sé cómo</label>
+      </div>
+    </div>
+
+    <div class="sec">
+      <h3>💬 Información adicional</h3>
+      <textarea id="b-info" rows="5" placeholder="Cuéntanos todo lo que recuerdes: qué vestía, con quién iba, qué pasó exactamente, cualquier detalle puede ayudar..."></textarea>
+    </div>
+
+    <button type="submit" class="btn-enviar be-naranja" id="btn-bus-submit">🔍 Registrar búsqueda</button>
+  </form>
+</div>
+
+<!-- ════════ ÉXITO ════════ -->
+<div id="p-exito" class="pantalla exito">
+  <div class="eico" id="ex-ico">✅</div>
+  <h2 id="ex-titulo">¡Registrado!</h2>
+  <p id="ex-desc">El caso ha sido guardado.</p>
+  <div class="eid" id="ex-id">—</div>
+  <p style="font-size:12px;color:#7FB3D3">Comparte esta página. Cada registro suma.</p>
+  <br>
+  <button class="btn-nuevo" onclick="ir('p-inicio')">← Registrar otro caso</button>
+</div>
+
+<!-- ════════ GALERÍA PÚBLICA ════════ -->
+<div id="p-galeria" class="pantalla">
+  <div class="form-header">
+    <button class="btn-volver" onclick="ir('p-inicio')">←</button>
+    <h2>🟢 Menores encontrados</h2>
+  </div>
+
+  <div class="buscador-pub">
+    <input type="text" id="filtro-nombre" placeholder="Buscar por nombre o señas...">
+    <select id="filtro-salud">
+      <option value="">Cualquier estado</option>
+      <option>Estable</option><option>Herido leve</option>
+      <option>Herido grave</option><option>Crítico</option>
+    </select>
+    <button class="btn-buscar-pub" onclick="cargarGaleria()">Buscar</button>
+  </div>
+
+  <div id="galeria-contenido" class="galeria">
+    <div class="cargando">Cargando registros...</div>
+  </div>
+</div>
+
+<!-- ════════ MODAL: DETALLE MENOR ════════ -->
+<div class="modal-overlay oculto" id="modal-overlay" onclick="cerrarModal(event)">
+  <div class="modal" id="modal-contenido">
+    <!-- se llena dinámicamente -->
+  </div>
+</div>
+
+<!-- ════════ ADMIN LOGIN ════════ -->
+<div id="p-admin-login" class="pantalla">
+  <div class="admin-login-box">
+    <h2>🔒 Administración</h2>
+    <label>Contraseña</label>
+    <input type="password" id="admin-pwd" placeholder="Contraseña" style="margin-bottom:12px">
+    <button class="btn-enviar be-azul" style="font-size:14px;padding:12px" onclick="loginAdmin()">Entrar</button>
+    <br><br>
+    <button class="link-admin" onclick="ir('p-inicio')">← Volver al inicio</button>
+    <p style="font-size:10px;color:rgba(255,255,255,.2);margin-top:10px">Cambia la contraseña antes de publicar.</p>
+  </div>
+</div>
+
+<!-- ════════ ADMIN PANEL ════════ -->
+<div id="p-admin" class="pantalla">
+  <div class="form-header">
+    <button class="btn-volver" onclick="ir('p-inicio')">←</button>
+    <h2>🛡️ Panel de administración</h2>
+  </div>
+
+  <div class="admin-stats">
+    <div class="stat"><div class="snum" id="sa-enc">0</div><div class="setq">Menores encontrados</div></div>
+    <div class="stat"><div class="snum" id="sa-bus">0</div><div class="setq">Búsquedas activas</div></div>
+    <div class="stat"><div class="snum" id="sa-sol">0</div><div class="setq">Solicitudes pendientes</div></div>
+    <div class="stat"><div class="snum" id="sa-res">0</div><div class="setq">Reunificados</div></div>
+  </div>
+
+  <button class="btn-exp" onclick="exportarCSV()">⬇️ Exportar CSV</button>
+  <button class="btn-exp" onclick="exportarJSON()" style="background:rgba(26,82,118,.25);border-color:var(--azul-claro)">⬇️ JSON</button>
+
+  <div class="tabs">
+    <button class="tab on" id="tab-enc" onclick="cambiarTab('enc',this)">🔵 Encontrados</button>
+    <button class="tab" id="tab-sol" onclick="cambiarTab('sol',this)">⚠️ Solicitudes</button>
+    <button class="tab" id="tab-bus" onclick="cambiarTab('bus',this)">🟠 Búsquedas</button>
+    <button class="tab" id="tab-res" onclick="cambiarTab('res',this)">✅ Reunificados</button>
+  </div>
+
+  <div id="tab-cont-enc"></div>
+  <div id="tab-cont-sol" style="display:none"></div>
+  <div id="tab-cont-bus" style="display:none"></div>
+  <div id="tab-cont-res" style="display:none"></div>
+</div>
+
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
